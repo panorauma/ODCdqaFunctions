@@ -1,0 +1,273 @@
+---
+title: "ODC Utilities"
+author: "Author names"
+format: html
+toc: true
+toc-depth: 6
+code-fold: false
+code-overflow: wrap
+code-copy: hover
+execute: 
+  eval: false
+  echo: false
+---
+
+```{r}
+library(DiagrammeR)
+```
+
+## Introduction
+
+ODC Utilities is a collection of tools created by the ODC team to facilitate and simplify the process of preparing datasets and data dictionaries for upload to the ODC platform.
+
+There will be 2 versions of ODC Utilities:
+
+1. [Website](#website)
+1. [Package](#package)
+
+The core functions will be the same. Each version might contain additional code to allow the application to work in the specified environment. Read more at [package version specific functions](#package-version-only).
+
+## Quick Start
+
+### Website
+
+1. Navigate to [site]()
+1. Click "Start Here" tab
+1. Select ODC community
+1. Click on "Browse" under Dataset to upload dataset (in .csv format)
+1. Click on "Browse" under Data dic to upload dataset (in .csv format)
+1. Click "ODC data checks" tab
+1. Click on "Run Checks" to start checks
+
+(Optional):
+
+To generate an interactive data exploration page from the uploaded dataset and data dictionary:
+
+1. Navigate to the "Data Explorer" tab
+1. Click "Generate EDA"
+
+The time it takes to complete this process will vary depending on size of uploaded dataset.
+
+### Package
+
+For full functionality, ODC Utilities requires R (version 4 and above) along with Python (3.8 and above) installed locally.
+
+- packages listed in `requirements.R` and `requirements.txt` are required for R and Python respectively
+
+Because the application is primarily coded in R, ODC Data Quality App can still be run without a local Python installation. However, the user will not be able to generate the interactive data exploration file.
+
+#### Install
+
+To install ODC Utilities, run the following lines of code in R console:
+
+```{r}
+#| echo: true
+install.packages("devtools")
+
+devtools::install_github("")
+```
+
+To install the required R packages, run the following line in R console:
+
+```{r}
+#| echo: true
+source("requirements.R")
+```
+
+To install the required Python packages, run one of the following in terminal:
+
+macOS/Linux
+
+```{r}
+#| echo: true
+python3 -m pip install -r requirements.txt
+```
+
+Windows
+
+```{r}
+#| echo: true
+python pip3 install -r requirements.txt
+```
+
+#### Run application
+
+```{r}
+#| echo: true
+startApp()
+```
+
+By default, this function will automatically import required libraries after user has installed them to their system. Read more about the `startApp` function [here](#startapp).
+
+A pop-up window will appear allowing the user to interact with the application.
+
+##### Code Only
+
+For advanced users who wish to use the application entirely through code:
+
+```{r}
+#| echo: true
+#import dataset & data dictionary
+dataset <- read_csv("PATH")
+data_dict <- read_csv("PATH")
+
+#store output as lists nested within list
+all <- validate_odc(
+  dataset = dataset,
+  datadic = data_dict,
+  str_checks = "all",
+  sch_checks = "all"
+)
+
+#display output in table
+render_check_table(structure_checks = all$structure,
+  schema_checks = all$schema)
+```
+
+## Functions
+
+The sections below will list all functions used. Version-specific functions will be listed under a separate section.
+
+### Core
+
+The overall sequence of the core functions is as follows:
+
+```{r}
+#| eval: true
+DiagrammeR::mermaid("
+graph LR
+  A{Import dataset} --> validate_structure
+  B{Import data dictionary} --> validate_schema
+  validate_structure --> validate_odc
+  validate_schema --> validate_odc
+  validate_odc --> checklist_to_df
+  checklist_to_df --> render_check_table
+  render_check_table --> C{Run app and display}
+")
+```
+
+- Rhomboid = user actions
+- Rectangle = functions coded into app
+
+#### validate_odc
+
+This function is a wrapper for the [`validate_structure`](#validate_structure) and [`validate_schema`](#validate_schema) functions, respectively. It will output a list object for the user to save into the global environment.
+
+Argument(s):
+
+- __dataset__: Default is `NULL`. Loads dataset directly from file.
+- __datadic__: Default is `NULL`. Loads dataset directly from file.
+- __dataset_path__: Passes dataset dataframe loaded into global environment into function.
+- __datadic_path__: Passes data dictionary dataframe loaded into global environment into function.
+- __str_checks__: Variables to use for structure checks. Is "all" for ODC-SCI but not for ODC-TBI.
+- __sch_checks__: Variables to use for schema checks. Is "all" for ODC-SCI but not for ODC-TBI.
+
+##### validate_structure
+
+This function performs a structure check on the uploaded dataset and outputs a list object.
+
+Structure checks include:
+
+- missing headers
+- duplicated headers
+- blank rows and/or columns
+- duplicated rows and/or columns
+
+Argument(s):
+
+- __dataset__: Passes dataset dataframe loaded into global environment into function.
+- __str_checks__: Variables to use for structure checks. Is "all" for ODC-SCI but not for ODC-TBI.
+
+##### validate_schema
+
+This function performs a schema check on the data dictionary and outputs a list object.
+
+Schema checks include:
+
+- missing headers
+- missing variable title
+- missing variable description
+
+Argument(s):
+
+- __dataset__: Passes dataset dataframe from global environment into function.
+- __datadic__: Passes data dictionary dataframe from global environment into function.
+- __sch_checks__: Variables to use for schema checks. Is "all" for ODC-SCI but not for ODC-TBI.
+
+#### render_check_table
+
+This function presents the results of [`validate_odc`](#validate_odc) as an interactive data table inside the application. The results are color-coded based on the following:
+
+- Pass (<span style="color:#b6d7a8">color</span>): No changes are necessary.
+- Fail (<span style="color:#e06666">color</span>): Changes are required.
+- Warning (<span style="color:#ffa500">color</span>): Flag for user to double-check/pay close attention to output.
+
+Argument(s):
+
+- __structure_checks__: Results of structure_checks. Will be dataframe inside list of dataframes.
+- __schema_checks__: Results of schema_checks. Will be dataframe inside list of dataframes.
+
+#### first_char_letter
+
+Checks whether the variable name starts off with a letter. Returns Pass or Fail.
+
+Argument(s):
+
+- __string__: Single string to perform check on.
+
+#### var_other_symbols
+
+Checks whether the variable name contains anything other than letters, digits, underscore, or period. Returns Pass or Fail.
+
+Argument(s):
+
+- __string__: Single string to perform check on.
+
+### Package version only
+
+The functions listed below are specific to the package version of the ODC Utilities.
+
+#### startApp
+
+Argument(s):
+
+Allows users of the package version to start application using a single line of code. Will automatically import required libraries for app to function.
+
+- __loadReqPackages__: Starts app and loads all required libraries necessary for app to function. Default is `TRUE`.
+
+##### library.dynam.unload
+
+Used to install required libraries if they are not present in list of user's installed packages.
+
+##### system.file
+
+Used to install required libraries if they are not present in list of user's installed packages.
+
+### Miscellaneous
+
+The functions below are not part of the core workflow or are depreciated. 
+
+#### empty_data_dict
+
+This function will generate a data dictionary template if a dataset is uploaded without an accompanying data dictionary. The user can then download and fill in this template.
+
+Argument(s):
+
+- __upload_dataset__: Passes dataset dataframe from global environment into function.
+
+#### summary.odcCheck
+
+Used for debugging purposes. Prints the results of [`validate_odc`](#validate_odc) inside the R console. Precursor to [`render_check_table`](#render_check_table).
+
+## License
+
+MIT License
+
+Copyright (c) 2022 The Regents of the University of California
+
+## Issues/Suggestions
+
+For any issues or suggestions, please contact the ODC Team via one of the following:
+
+- [Email]()
+- [GitHub]()
