@@ -1,0 +1,60 @@
+---
+title: "Workflow Example"
+author: ""
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: show
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup,include=FALSE}
+knitr::opts_chunk$set(
+	echo=TRUE,
+	message=FALSE,
+	warning=FALSE,
+	eval=FALSE
+)
+```
+
+## Intro
+
+This template shows how to perform the data quality checks for a single dataset. For an example of performing the data quality checks on multiple datasets, see: [ref]().
+
+## Import Data
+
+```{r}
+#load required libraries
+library(dqaFunctions)
+library(tidyverse)
+```
+
+```{r}
+#import dataset + corresponding data dictionary
+df_list <- list()
+df_list[["dataset"]] <- read_csv("PATH HERE")
+df_list[["data_dict"]] <- read_csv("PATH HERE")
+```
+
+### Perform checks
+
+If preparing for ODC-SCI upload, set `str_checks` and `sch_checks` to "all".
+
+```{r}
+#perform check
+check_result <- dqaFunctions::validate_odc(
+    dataset = df_list[["dataset"]],
+    datadic = df_list[["data_dict"]],
+    str_checks = "all",
+    sch_checks = "all"
+  )
+```
+
+### Convert results to dataframe
+
+```{r}
+results_table <- dqaFunctions::checklist_to_df(check_result$all$structure)
+head(outputs$ex_df)
+```
