@@ -1,9 +1,9 @@
-Package: dqaFunctions
+Package: ODCdqaFunctions
 Type: Package
 Title: ODC Data Quality App Standalone Function
 Version: 0.1.0
-Author: KF
-Maintainer: The package maintainer <github.com/kenf1>
+Author: 
+Maintainer: The package maintainer <>
 Description: Standalone functions for ODC Data Quality App.
     Copyright (c) 2022 The Regents of the University of California
 License: MIT
