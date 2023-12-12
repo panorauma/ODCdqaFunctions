@@ -153,21 +153,25 @@ render_check_table <- function(structure_checks,schema_checks){
   
   # table_report$CheckName <- c("Blank Header","")
   
-  table_html<-  DT::datatable(table_report,
+  table_html <- DT::datatable(table_report,
                               selection = "none",
                               rownames = FALSE,
-                              colnames = c('Type of check','Check name', 'Status', 'Number of Fails', 'Fails'),
-                              extensions = c('Buttons', 'RowGroup'), options = list(
+                              colnames = c('Type of check','Check name', 'Status', 
+                                           'Number of Fails', 'Fails'),
+                              extensions = c('Buttons', 'RowGroup'),
+                              options = list(
                                 dom = 'tB',
                                 buttons = c('copy', 'csv'),
                                 rowGroup = list(dataSrc = 0),
                                 pageLength = 16
-                              ),editable = FALSE,
-                              callback = JS(callback)) %>%
+                              ),
+                              editable = FALSE,
+                              callback = JS("return table")) %>%
     formatStyle('Status',target='row',
-                backgroundColor=styleEqual(c("Pass","Fail","Warning"), c('#b6d7a8','#e06666',"#ffa500"))
+                backgroundColor=styleEqual(c("Pass","Fail","Warning"),
+                                           c('#b6d7a8','#e06666',"#ffa500"))
     )
-  return(list("table_html" = table_html,"df" = table_report))
+  return(list("table_html"=table_html,"df"=table_report))
 }
 
 #' startApp

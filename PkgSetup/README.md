@@ -24,3 +24,13 @@ The post-commit hook runs after a commit is made. A second commit needs to be ma
 
 Commit 1: Update to latest version of main `ODCdqa` repository.
 Commit 2: Copy and commit changes.
+
+OR
+
+```{bash}
+#update submodule to latest remote commit
+git submodule update --remote
+
+#undo last commit (group update & functions.R into single commit)
+git reset HEAD~
+```
