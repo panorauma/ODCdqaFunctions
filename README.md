@@ -10,7 +10,7 @@ This R package is aimed towards technical users or those who require modularity,
 
 ```{r}
 install.packages("devtools")
-devtools::install_github("")
+devtools::install_github("panorauma/ODCdqaFunctions")
 ```
 
 ### Requirements
