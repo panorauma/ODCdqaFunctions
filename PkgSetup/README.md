@@ -7,9 +7,14 @@ To ensure `ODCdqaFunctions` contains the same functions as `ODCdqa`, git submodu
 To setup the post-commit hook:
 
 1. Navigate to `.git/hook` inside the repo
-2. Create a file called `post-commit` (no extension) containing the following
 
+```{bash}
+cd .git/hook
 ```
+
+2. Create a file called `post-commit` (no extension) containing the following:
+
+```{bash}
 #!/bin/bash
 
 cd ~/ODCdqaFunctions/
@@ -17,6 +22,10 @@ cp -rf ./ODCdqa/src/functions.R ./R/functions.R
 ```
 
 3. Convert to executable using `chmod +x FILE`
+
+```{bash}
+chmod +x .git/hook/post-commit
+```
 
 #### Usage
 
