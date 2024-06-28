@@ -3,7 +3,7 @@ Type: Package
 Title: ODC Data Quality App Standalone Function
 Version: 0.1.1
 Author: Kenneth A Fond, Hannah Radabaugh, Romana Vavrek, Karim Fouad, Jeffrey S Grethe, Maryann E Martone, Adam R Ferguson, Abel Torres-Espin
-Maintainer: The package maintainer <>
+Maintainer: KF (kenf1) <info@odc-sci.org>
 Description: Standalone functions for ODC Data Quality App.
     Copyright (c) 2022 The Regents of the University of California
 License: MIT

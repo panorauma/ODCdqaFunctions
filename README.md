@@ -2,7 +2,9 @@
 
 `ODCdqaFunctions` packages the backend logic of [ODCdqa](https://github.com/panorauma/ODCdqa) as an R package. This R package is aimed towards technical users or those who require modularity, reproducability, or batch processing.
 
-> Note: This R package does not install Python nor the required libraries for the EDA Report.
+> Note: This R package does not install Python nor the required libraries for the EDA Report  
+>
+> Refer back to [ODCdqa](https://github.com/panorauma/ODCdqa) for vignettes, examples, tests  
 
 ### To install
 
