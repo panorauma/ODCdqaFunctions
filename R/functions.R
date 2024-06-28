@@ -6,8 +6,8 @@
 #'
 #' @return Dataframe of all check_list information
 #' @export
-checklist_to_df <- function(check_list){
-  
+checklist_to_df <- function(check_list){ #MARK: checklist_to_df  
+
   #create empty df
   table_report <- data.frame(CheckName=names(check_list),
                              Num_blank=NA,
@@ -52,7 +52,7 @@ checklist_to_df <- function(check_list){
 #'
 #' @return Dataframe of partially filled data dictionary, if no data dictionary uploaded.
 #' @export
-empty_data_dict <- function(upload_dataset){
+empty_data_dict <- function(upload_dataset){ #MARK: empty_data_dict
   
   #get colnames from uploaded dataset
   df_data_Names <- unlist(names(upload_dataset))
@@ -110,7 +110,7 @@ empty_data_dict <- function(upload_dataset){
 #'
 #' @return Unloads all libraries not included in R startup
 #' @export
-library.dynam.unload <- function(chname,libpath,verbose=getOption("verbose"),file.ext=.Platform$dynlib.ext){
+library.dynam.unload <- function(chname,libpath,verbose=getOption("verbose"),file.ext=.Platform$dynlib.ext){ #MARK: library.dynam.unload
     if(!is.null(dev_meta(chname))){
         try({
             unload_dll(pkg_name(libpath))
@@ -129,7 +129,7 @@ library.dynam.unload <- function(chname,libpath,verbose=getOption("verbose"),fil
 #'
 #' @return Single dataframe of combined structure and schema check results.
 #' @export
-render_check_table <- function(structure_checks,schema_checks){
+render_check_table <- function(structure_checks,schema_checks){ #MARK: render_check_table
   
   #df for struct check results
   temp_structure <- checklist_to_df(structure_checks)
@@ -182,7 +182,7 @@ render_check_table <- function(structure_checks,schema_checks){
 #'
 #' @return Opens shiny app inside default web browser.
 #' @export
-startApp <- function(loadReqPackages=TRUE){
+startApp <- function(loadReqPackages=TRUE){ #MARK: startApp
   if(loadReqPackages==TRUE){
     library(tidyverse)
     library(shiny)
@@ -205,7 +205,7 @@ startApp <- function(loadReqPackages=TRUE){
 #'
 #' @return Prints out report for the checks.
 #' @export
-summary.odcCheck <- function(validate_results){
+summary.odcCheck <- function(validate_results){ #MARK: summary.odcCheck
 
   #The reports for the checks are a set of list. This function
   #prints out the report for the checks.
@@ -404,7 +404,7 @@ summary.odcCheck <- function(validate_results){
 #'
 #' @return Path to package (if found)
 #' @export
-system.file <- function(...,package="base",lib.loc=NULL,mustWork=FALSE){
+system.file <- function(...,package="base",lib.loc=NULL,mustWork=FALSE){ #MARK: system.file
     if(!(package %in% dev_packages())){
         base::system.file(..., package = package, lib.loc = lib.loc, 
             mustWork = mustWork)
@@ -447,7 +447,7 @@ system.file <- function(...,package="base",lib.loc=NULL,mustWork=FALSE){
 #' @export 
 validate_odc <- function(dataset=NULL,datadic=NULL,
                        dataset_path=NULL,datadic_path=NULL,str_checks,
-                       sch_checks){
+                       sch_checks){ #MARK: validate_odc
 
   minimal_var <- c("Subject_ID", "Species", "Strain", "Animal_origin", "Age", "Weight", "Sex",
                    'Group', 'Laboratory', 'StudyLeader', 'Published', "Exclusion_in_origin_study",
@@ -499,6 +499,11 @@ validate_schema <- function(dataset,datadic,sch_checks="all"){
   if(sch_checks == "all"){
     sch_checks <- c("dic_header", "data_extra_header","data_miss_header",
                     "miss_description","miss_title","min_vars",
+                    "other_symbols","pos1_char","over_60char")
+  }else{
+    #tbi does not have "min_vars"
+    sch_checks <- c("dic_header", "data_extra_header","data_miss_header",
+                    "miss_description","miss_title",
                     "other_symbols","pos1_char","over_60char")
   }
 
@@ -663,7 +668,7 @@ validate_schema <- function(dataset,datadic,sch_checks="all"){
 }
 
 #struct check
-validate_structure <- function(dataset,str_checks="all"){
+validate_structure <- function(dataset,str_checks="all"){ #MARK: validate_structure
 
   #Performs the structural check given the dataset_path
 
@@ -703,7 +708,7 @@ validate_structure <- function(dataset,str_checks="all"){
   #blank row
   if ("blank_row"%in%checks){
     blank_row<-apply(dataset, 1, function(x){
-      sum(x == '' | is.na(x),na.rm = T)/length(x)
+      sum(x == '' | is.na(x) | x == "na",na.rm = T)/length(x)
     })
     results[['blank_row']]<-list('n_blank_row'=sum(blank_row==1),
                                  'which_blank_row'=which(blank_row==1))
@@ -712,7 +717,7 @@ validate_structure <- function(dataset,str_checks="all"){
   #blank column
   if ("blank_column"%in%checks){
     blank_column<-apply(dataset, 2, function(x){
-      sum(x == '' | is.na(x),na.rm = T)/length(x)
+      sum(x == '' | is.na(x) | x == "na",na.rm = T)/length(x)
     })
     results[['blank_column']]<-list('n_blank_column'=sum(blank_column==1),
                                     'which_blank_column'=names(which(blank_column==1)))
@@ -754,7 +759,7 @@ validate_structure <- function(dataset,str_checks="all"){
 #'
 #' @return String of "Pass" or "Fail"
 #' @export
-first_char_letter <- function(string){
+first_char_letter <- function(string){ #MARK: first_char_letter
   
   #find position of 1st letter in string
   temp <- string %>%
